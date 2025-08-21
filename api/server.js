@@ -65,7 +65,11 @@ app.use((req, res, next) => {
 const db = new Database();
 const collector = new DataCollector();
 
+// Import routes
+const marketDataRoutes = require('./routes/market-data');
+
 // API Routes
+app.use('/api/market-data', marketDataRoutes);
 
 // Get current top companies
 app.get('/api/top-companies', async (req, res) => {

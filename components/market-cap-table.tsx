@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   getFlattenedMarketCapData, 
   getAvailableYears, 
@@ -22,22 +22,57 @@ export function MarketCapTable() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'market_cap' | 'company_name' | 'year'>('year');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
-  const availableYears = useMemo(() => getAvailableYears(), []);
-  const currentYear = 2025; // Current year for top 10 highlighting
   
-  const data = useMemo(() => {
-    if (selectedYear === 'all') {
-      return getFlattenedMarketCapData();
-    } else {
-      return getYearlyTopTen(selectedYear);
+  // State for async data
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [data, setData] = useState<FlattenedEntry[]>([]);
+  const [currentYearTop10, setCurrentYearTop10] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  
+  const currentYear = 2025; // Current year for top 10 highlighting
+
+  // Load available years on mount
+  useEffect(() => {
+    async function loadYears() {
+      const years = await getAvailableYears();
+      setAvailableYears(years);
     }
+    loadYears();
+  }, []);
+
+  // Load data when selectedYear changes
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      try {
+        if (selectedYear === 'all') {
+          const flattenedData = await getFlattenedMarketCapData();
+          setData(flattenedData);
+        } else {
+          const yearlyData = await getYearlyTopTen(selectedYear);
+          setData(yearlyData);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        setData([]);
+      }
+      setLoading(false);
+    }
+    loadData();
   }, [selectedYear]);
 
-  // Get current year's top 10 for highlighting
-  const currentYearTop10 = useMemo(() => {
-    const currentYearData = getYearlyTopTen(currentYear);
-    return new Set(currentYearData.map(entry => entry.company_ticker));
+  // Load current year's top 10 for highlighting
+  useEffect(() => {
+    async function loadCurrentYearTop10() {
+      try {
+        const currentYearData = await getYearlyTopTen(currentYear);
+        const tickers = new Set(currentYearData.map(entry => entry.company_ticker));
+        setCurrentYearTop10(tickers);
+      } catch (error) {
+        console.error('Error loading current year top 10:', error);
+      }
+    }
+    loadCurrentYearTop10();
   }, [currentYear]);
 
   const filteredAndSortedData = useMemo(() => {
@@ -150,12 +185,17 @@ export function MarketCapTable() {
       </div>
 
       <div className="text-sm text-muted-foreground">
-        Showing {filteredAndSortedData.length} entries
+        {loading ? 'Loading...' : `Showing ${filteredAndSortedData.length} entries`}
         {selectedYear !== 'all' && ` for ${selectedYear}`}
       </div>
 
-      <div className="border rounded-lg">
-        <Table>
+      {loading ? (
+        <div className="border rounded-lg p-8 text-center">
+          <div className="text-muted-foreground">Loading market cap data...</div>
+        </div>
+      ) : (
+        <div className="border rounded-lg">
+          <Table>
           <TableHeader>
             <TableRow>
               <TableHead 
@@ -216,7 +256,8 @@ export function MarketCapTable() {
             ))}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -32,6 +32,23 @@ class DataCollector {
   async initializeCompanies() {
     logger.info('Initializing companies database...');
     
+    // Check if we need to migrate JSON data
+    const existingCompanies = await this.db.all('SELECT COUNT(*) as count FROM companies');
+    if (existingCompanies[0].count === 0) {
+      logger.info('Database is empty, checking for JSON data to migrate...');
+      
+      try {
+        const JSONMigrator = require('./migrate-json-data');
+        const migrator = new JSONMigrator();
+        await migrator.migrateHistoricalData();
+        await migrator.cleanup();
+        logger.info('JSON data migration completed');
+        return; // Skip manual initialization since migration handled it
+      } catch (error) {
+        logger.warn('JSON migration failed, falling back to manual initialization:', error.message);
+      }
+    }
+    
     const companyData = [
       { ticker: 'AAPL', name: 'Apple Inc.', exchange: 'NASDAQ', sector: 'Technology' },
       { ticker: 'MSFT', name: 'Microsoft Corporation', exchange: 'NASDAQ', sector: 'Technology' },
