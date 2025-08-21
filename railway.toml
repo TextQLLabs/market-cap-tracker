@@ -1,0 +1,34 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3
+startCommand = "npm run start"
+
+[env]
+NODE_ENV = { default = "production" }
+PORT = { default = "3000" }
+API_PORT = { default = "3001" }
+
+# Database
+DATABASE_PATH = { default = "/app/data/market_caps.db" }
+
+# Logging
+LOG_LEVEL = { default = "info" }
+
+# Data collection intervals (in minutes)
+PRICE_UPDATE_INTERVAL = { default = "15" }
+FUNDAMENTAL_UPDATE_INTERVAL = { default = "60" }
+FULL_REFRESH_INTERVAL = { default = "1440" }
+
+# Rate limiting
+MAX_REQUESTS_PER_MINUTE = { default = "100" }
+
+# Next.js
+NEXT_TELEMETRY_DISABLED = { default = "1" }
+
+[experimental]
+nixpacksPlan = "node"

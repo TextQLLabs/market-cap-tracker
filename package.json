@@ -1,0 +1,58 @@
+{
+  "name": "market-cap-tracker",
+  "version": "1.0.0",
+  "description": "Real-time market cap tracker with historical data visualization and live API",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:next\" \"npm run dev:api\"",
+    "dev:next": "next dev --turbopack",
+    "dev:api": "cd api && npm run dev",
+    "build": "npm run build:api && next build --turbopack",
+    "build:api": "cd api && npm install",
+    "start": "node start.js",
+    "start:next": "next start",
+    "start:api": "cd api && npm start",
+    "lint": "eslint",
+    "collect": "cd api && npm run collect",
+    "deploy": "railway deploy"
+  },
+  "dependencies": {
+    "@radix-ui/react-tabs": "^1.1.13",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.540.0",
+    "next": "15.5.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "recharts": "^3.1.2",
+    "tailwind-merge": "^3.3.1",
+    "concurrently": "^8.2.2",
+    "axios": "^1.6.0",
+    "express": "^4.18.2",
+    "node-cron": "^3.0.3",
+    "sqlite3": "^5.1.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["market-cap", "stocks", "api", "financial-data", "nextjs", "react"],
+  "author": "TextQL Labs",
+  "license": "MIT"
+}
