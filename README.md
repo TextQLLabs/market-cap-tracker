@@ -12,7 +12,7 @@ A comprehensive full-stack application for tracking and visualizing market capit
 - **Real-time Updates**: Connects to live API for current data
 
 ### 🔌 **Backend API (Express.js)**
-- **Real-time Data Collection**: Automated collection every 15 minutes during market hours
+- **Daily Data Collection**: Automated collection every day at 6 PM EST (after markets close)
 - **Multiple Data Sources**: Yahoo Finance, SEC EDGAR, Alpha Vantage, FMP
 - **Historical Storage**: SQLite database with comprehensive market cap history
 - **RESTful API**: Clean endpoints for accessing all market cap data
@@ -93,10 +93,10 @@ API health status and uptime information.
 4. **Financial Modeling Prep** - Additional market data (250 calls/day free)
 
 ### Data Collection Schedule
-- **Market Hours**: Every 15 minutes (9 AM - 4 PM EST, Mon-Fri)
-- **After Hours**: Every hour
-- **Fundamental Data**: Daily at 6 AM (shares outstanding from SEC)
-- **Weekend**: Every 6 hours for international markets
+- **Daily Updates**: Every weekday at 6 PM EST (after markets close)
+- **Market Cap Data**: Current prices and calculated market capitalizations
+- **Fundamental Data**: Weekly on Sundays at 6 AM (shares outstanding from SEC)
+- **Perfect for daily check-ins**: Fresh data every time you visit
 
 ## Project Structure
 

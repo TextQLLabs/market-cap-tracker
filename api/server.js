@@ -247,26 +247,30 @@ app.use((err, req, res, next) => {
 
 // Scheduled data collection
 if (process.env.NODE_ENV !== 'test') {
-  // Collect prices every 15 minutes during market hours (9 AM - 4 PM EST, Mon-Fri)
-  cron.schedule('*/15 9-16 * * 1-5', async () => {
-    logger.info('Scheduled price collection starting...');
+  // Collect prices and market caps daily at 6 PM EST (after markets close)
+  cron.schedule('0 18 * * 1-5', async () => {
+    logger.info('Daily market cap collection starting...');
     try {
       await collector.collectCurrentPrices();
+      logger.info('Daily price collection completed successfully');
     } catch (error) {
-      logger.error('Scheduled collection error:', error);
+      logger.error('Daily collection error:', error);
     }
   }, {
     timezone: "America/New_York"
   });
 
-  // Collect fundamental data daily at 6 AM
-  cron.schedule('0 6 * * *', async () => {
-    logger.info('Daily fundamental data collection starting...');
+  // Collect fundamental data (shares outstanding) weekly on Sunday at 6 AM
+  cron.schedule('0 6 * * 0', async () => {
+    logger.info('Weekly fundamental data collection starting...');
     try {
       await collector.collectFundamentalData();
+      logger.info('Weekly fundamental data collection completed successfully');
     } catch (error) {
       logger.error('Fundamental collection error:', error);
     }
+  }, {
+    timezone: "America/New_York"
   });
 
   // Initialize companies on startup

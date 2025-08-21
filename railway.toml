@@ -19,10 +19,10 @@ DATABASE_PATH = { default = "/app/data/market_caps.db" }
 # Logging
 LOG_LEVEL = { default = "info" }
 
-# Data collection intervals (in minutes)
-PRICE_UPDATE_INTERVAL = { default = "15" }
-FUNDAMENTAL_UPDATE_INTERVAL = { default = "60" }
-FULL_REFRESH_INTERVAL = { default = "1440" }
+# Data collection schedule
+DAILY_COLLECTION_ENABLED = { default = "true" }
+DAILY_COLLECTION_TIME = { default = "18" }
+WEEKLY_FUNDAMENTALS_DAY = { default = "0" }
 
 # Rate limiting
 MAX_REQUESTS_PER_MINUTE = { default = "100" }
